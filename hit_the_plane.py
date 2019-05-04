@@ -1,11 +1,13 @@
 import random
 import pygame
+import sys
+
 pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
-
+win = True
 # --- Classes
 
 
@@ -36,11 +38,14 @@ class Player(pygame.sprite.Sprite):
         """ Update the player's position. """
         # Get the current mouse position. This returns the position
         # as a list of two numbers.
-        pos = pygame.mouse.get_pos()
+        # pos = pygame.mouse.get_pos()
 
         # Set the player x position to the mouse x position
-        self.rect.x = pos[0]
-        self.rect.y = pos[1]
+        # self.rect.x = pos[0]
+        # self.rect.y = pos[1]
+        self.rect.x = 100
+        self.rect.y = 100
+
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -62,12 +67,13 @@ class Bullet(pygame.sprite.Sprite):
 
 
 def main():
+    global win
     pygame.init()
 
     screen_width = 640
     screen_height = 480
     screen = pygame.display.set_mode([screen_width, screen_height])
-
+    screen.fill(WHITE)
     block_list = pygame.sprite.Group()
     bullet_list = pygame.sprite.Group()
     player_list = pygame.sprite.Group()
@@ -97,7 +103,12 @@ def main():
         # --- Event Processing
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                done = True
+                win = False
+                print(win)
+                sys.exit()
+
+
+
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -147,8 +158,8 @@ def main():
             if block.rect.y > screen_height:
                 block_list.remove(block)
 
-        screen.fill(WHITE)
 
+        screen.fill(WHITE)
         bullet_list.draw(screen)
         block_list.draw(screen)
         player_list.draw(screen)
@@ -158,3 +169,4 @@ def main():
 
 
 main()
+
