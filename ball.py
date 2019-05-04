@@ -1,12 +1,21 @@
 import pygame
 import random
+import sys
 width = 700
 height = 580
 gray = (180,180,180)
 black = (0,0,0)
-
+PLAY_TIME = 30
 size = [width, height]
 screen = pygame.display.set_mode(size)
+WHITE = (255,255,255)
+win = False
+
+def draw_timer(screen, x, y, time_left):
+    font = pygame.font.Font(None, 36)  # Choose the font for the text
+    text = font.render("Time Left = " + str(time_left), 1, WHITE)  # Create the text
+    screen.blit(text, (x, y))  # Draw the text on the screen
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -20,12 +29,15 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 100
 
     def update(self):
-        self.change_y = 1
+        self.change_y = 3
         self.rect.y += self.change_y
         self.rect.x += self.change_x
         if self.rect.y >= width - self.rect.height and self.change_y >= 0:
             self.change_y = 0
             self.rect.y = height - self.rect.height
+
+
+
 
     def go_left(self):
         self.change_x = -6
@@ -43,6 +55,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
 
         self.image = pygame.Surface([width,height])
+        self.r = width
         self.image.fill(gray)
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -52,14 +65,16 @@ class Platform(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y -= 3
-        if self.rect.y < -10:
+        if self.rect.y < 0:
             self.kill()
 
 
 
 def main():
+    global win
     pygame.init()
     screen.fill(black)
+    start_time = pygame.time.get_ticks()
     pygame.display.set_caption("Falling_ball")
     done = False
     block_list = pygame.sprite.Group()
@@ -80,9 +95,30 @@ def main():
 
 
     while not done:
+        time_left = pygame.time.get_ticks() - start_time  # find out how much time has passed since the start of the game
+        time_left = time_left / 1000  # Convert this time from milliseconds to seconds
+        time_left = PLAY_TIME - time_left  # Find out how much time is remaining by subtracting total time from time thats passed
+        time_left = int(time_left)  # Convert this value to an integer
+        draw_timer(screen, 50, 450, time_left)
+
+        if (start_time + (PLAY_TIME * 1000) <= pygame.time.get_ticks()):
+            # If the time is up, set the boolean game_ended to True
+            # so we can display the correct game over screen
+            win = True
+            print(win)
+            sys.exit()
+
+        if player.rect.y> height:
+            win = False
+            print(win)
+            sys.exit()
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                done = True
+                win = False
+                print(win)
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -95,20 +131,25 @@ def main():
                     player.stop()
                 if event.key == pygame.K_RIGHT and player.change_x > 0:
                     player.stop()
-        if len(block_list)< 1:
+
+        if len(block_list)< 3:
             width1 = random.randint(0, 200)
             height1 = 10
             block1 = Platform(width1, height1,random.randint(350,width))
             block2 = Platform(width1, height1, random.randint(0, 350))
             block_list.add(block1)
             block_list.add(block2)
-        else:
-            pass
-
 
         block_list.update()
+        collide_list = pygame.sprite.spritecollide(player, block_list, False)
+        if len(collide_list) != 0:
+            player.rect.bottom -= 2
+            player.rect.y -= 6
+
         player_list.update()
         screen.fill(black)
+        draw_timer(screen, 50, 50, time_left)
+
         player_list.draw(screen)
         block_list.draw(screen)
         clock.tick(60)
@@ -116,80 +157,3 @@ def main():
 
 
 main()
-#
-# import pygame
-# from pygame.locals import *
-#
-#
-# class MySprite(pygame.sprite.Sprite):
-#     def __init__(self, target):
-#         pygame.sprite.Sprite.__init__(self)
-#         self.target_surface = target
-#         self.image = None
-#         self.master_image = None
-#         self.rect = None
-#         self.topleft = 0, 0
-#         self.frame = 0
-#         self.old_frame = -1
-#         self.frame_width = 1
-#         self.frame_height = 1
-#         self.first_frame = 0
-#         self.last_frame = 0
-#         self.columns = 1
-#         self.last_time = 0
-#
-#     def load(self, filename, width, height, columns):
-#         self.master_image = pygame.image.load(filename).convert_alpha()
-#         self.frame_width = width
-#         self.frame_height = height
-#         self.rect = self.master_image.get_rect()
-#         self.columns = columns
-#         rect = self.master_image.get_rect()
-#         self.last_frame = (rect.width // width) * (rect.height // height) - 1
-#
-#     def update(self, current_time, rate=60):
-#         self.rect.y+=1
-#
-#
-#         if current_time > self.last_time + rate:
-#             self.frame += 1
-#             if self.frame > self.last_frame:
-#                 self.frame = self.first_frame
-#             self.last_time = current_time
-#
-#         if self.frame != self.old_frame:
-#             frame_x = (self.frame % self.columns) * self.frame_width
-#             frame_y = (self.frame // self.columns) * self.frame_height
-#             rect = (frame_x, frame_y, self.frame_width, self.frame_height)
-#             self.image = self.master_image.subsurface(rect)
-#             self.old_frame = self.frame
-#
-#
-# pygame.init()
-# screen = pygame.display.set_mode((800, 600), 0, 32)
-# pygame.display.set_caption("精灵类测试")
-# font = pygame.font.Font(None, 18)
-# framerate = pygame.time.Clock()
-#
-# cat = MySprite(screen)
-# cat.load("sprite.png", 100, 100, 4)
-# group = pygame.sprite.Group()
-# group.add(cat)
-#
-# while True:
-#     framerate.tick(30)
-#     ticks = pygame.time.get_ticks()
-#
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             pygame.quit()
-#             exit()
-#     key = pygame.key.get_pressed()
-#     if key[pygame.K_ESCAPE]:
-#         exit()
-#
-#     screen.fill((0, 0, 100))
-#
-#     group.update(ticks)
-#     group.draw(screen)
-#     pygame.display.update()
