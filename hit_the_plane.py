@@ -8,6 +8,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 win = True
+pygame.init()
 # --- Classes
 
 
@@ -67,9 +68,9 @@ class Bullet(pygame.sprite.Sprite):
 
 
 def main():
-    global win
     pygame.init()
-
+    global win
+    done = False
     screen_width = 640
     screen_height = 480
     screen = pygame.display.set_mode([screen_width, screen_height])
@@ -93,7 +94,6 @@ def main():
     player = Player()
     player_list.add(player)
 
-    done = False
     clock = pygame.time.Clock()
     score = 0
     player.rect.y = 370
@@ -104,11 +104,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 win = False
+                done = True
                 print(win)
-                sys.exit()
-
-
-
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -159,13 +156,16 @@ def main():
                 block_list.remove(block)
 
 
+
         screen.fill(WHITE)
+
         bullet_list.draw(screen)
         block_list.draw(screen)
         player_list.draw(screen)
         pygame.display.flip()
         clock.tick(50)
 
+    pygame.quit()
 
 
 main()
