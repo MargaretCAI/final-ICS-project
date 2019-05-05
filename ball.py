@@ -9,8 +9,8 @@ PLAY_TIME = 30
 size = [width, height]
 screen = pygame.display.set_mode(size)
 WHITE = (255,255,255)
-win = False
-
+win = 1
+pygame.init()
 def draw_timer(screen, x, y, time_left):
     font = pygame.font.Font(None, 36)  # Choose the font for the text
     text = font.render("Time Left = " + str(time_left), 1, WHITE)  # Create the text
@@ -104,21 +104,24 @@ def main():
         if (start_time + (PLAY_TIME * 1000) <= pygame.time.get_ticks()):
             # If the time is up, set the boolean game_ended to True
             # so we can display the correct game over screen
-            win = True
+            win = 0
+
+            done = True
             print(win)
-            sys.exit()
+
+
 
         if player.rect.y> height:
-            win = False
-            print(win)
-            sys.exit()
+            return 0
+
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                win = False
-                print(win)
-                sys.exit()
+                return 0
+
+
+
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -148,6 +151,13 @@ def main():
 
         player_list.update()
         screen.fill(black)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                win = False
+                print(win)
+                pygame.quit()
+
         draw_timer(screen, 50, 50, time_left)
 
         player_list.draw(screen)
@@ -156,4 +166,10 @@ def main():
         pygame.display.update()
 
 
-main()
+    pygame.quit()
+
+def quit():
+    pygame.quit()
+
+
+
