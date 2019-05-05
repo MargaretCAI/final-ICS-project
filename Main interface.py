@@ -101,9 +101,11 @@ def game1():
 def game2():
     a = tkinter.messagebox.askyesno(title='Hi, Warrior', message='If you win, you will get a point; lose, get nothing.')
     if a == True:
-        hit_the_plane.main()
-        result = hit_the_plane.win
-        if result == True:  # 游戏胜利
+
+        result = hit_the_plane.main()
+        pygame.quit()
+
+        if result == 0:  # 游戏胜利
             tkinter.messagebox.askyesno(title='Game over', message='You win')
 
         else:
@@ -126,6 +128,8 @@ class play_game():
             if a == True:
                 hit_the_plane.main()
                 result = hit_the_plane.win
+                hit_the_plane.quit()
+
                 if result == True:  # 游戏胜利
                     tkinter.messagebox.askyesno(title='Congratulations', message='You win')
                     STATE_1 = 0
