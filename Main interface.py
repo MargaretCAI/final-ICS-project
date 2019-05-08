@@ -87,9 +87,10 @@ def game1():
     if STATE_1 == 1:
         a = tkinter.messagebox.askyesno(title='Hi, Warrior', message='If you win, you will get a point; lose, get nothing.')
         if a == True:
-            hit_the_plane.main()
-            result = hit_the_plane.win
-            if result == True:#游戏胜利
+            result = hit_the_plane.main()
+            hit_the_plane.quit()
+
+            if result == "win":   #游戏胜利
                 tkinter.messagebox.askyesno(title='Game over', message='You win')
                 STATE_1 = 0
             else:
@@ -126,11 +127,11 @@ class play_game():
         if STATE_1 == 1:
             a = tkinter.messagebox.askyesno(title='Hi, Warrior', message='If you win, you will get a point; lose, get nothing.')
             if a == True:
-                hit_the_plane.main()
-                result = hit_the_plane.win
+                
+                result = hit_the_plane.main()
                 hit_the_plane.quit()
 
-                if result == True:  # 游戏胜利
+                if result == 0:  # 游戏胜利
                     tkinter.messagebox.askyesno(title='Congratulations', message='You win')
                     STATE_1 = 0
                 else:

@@ -107,7 +107,7 @@ class Board:
     def handle_block_slide(self, direction):
         self.next_direction = direction
         # check each row/column (depend on direction)
-        # TODO(Rundong) loop below can be optimised
+
         for line_col_idx in range(SLIDE_SWITCHER[direction][5]):
             # blocks in same row/column, idx in current row/column
             current_blocks = [(block, getattr(block, SLIDE_SWITCHER[direction][4])) for block in self.blocks if
@@ -147,7 +147,7 @@ class Board:
                 block.slide_enable = False
 
     def merge_block(self, direction):
-        # TODO(Rundong) loop below can be optimised
+
         for line_col_idx in range(SLIDE_SWITCHER[direction][5]):
             current_blocks = [(block, getattr(block, SLIDE_SWITCHER[direction][4]))
                               for block in self.blocks if getattr(block, SLIDE_SWITCHER[direction][3]) == line_col_idx]
@@ -258,7 +258,7 @@ def main():
 
 
 def draw_blocks(board_in):
-    assert isinstance(board_in, Board), 'function "draw_blocks": accepts "Board" class argument only.'
+    # assert isinstance(board_in, Board), 'function "draw_blocks": accepts "Board" class argument only.'
     for block in board_in.blocks:
         left, top = block_position_to_pixel(block.coordinate_x, block.coordinate_y)
         block_rect_obj = pygame.Rect(left, top, BLOCK_SIZE, BLOCK_SIZE)

@@ -18,10 +18,9 @@ def draw_score(screen, x, y, score):
     text = font.render("Score = " + str(score), 1, WHITE)
     screen.blit(text, (x, y))
 
-
 class Apple(pygame.sprite.Sprite):
     def __init__(self,x,y):
-        """ Constructor function """
+
 
         # Call the parent's constructor
         super().__init__()
@@ -32,18 +31,12 @@ class Apple(pygame.sprite.Sprite):
         self.rect.y = y
 
 
-
-
-
-
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         """ Constructor function """
 
         # Call the parent's constructor
         super().__init__()
-
-
         self.image = pygame.image.load("character.png")
         self.rect = self.image.get_rect()
         self.change_x = 0
@@ -192,7 +185,6 @@ class Level(object):
         for enemy in self.enemy_list:
             enemy.rect.x += shift_x
 
-
 class Level_01(Level):
     """ Definition for level 1. """
 
@@ -230,7 +222,6 @@ class Level_01(Level):
         block.player = self.player
         block.level = self
         self.platform_list.add(block)
-
 
 class Level_02(Level):
 
@@ -415,14 +406,10 @@ def main():
             else:
                 screen.fill(BLACK)
                 pygame.quit()
-
-
-
         current_level.draw(screen)
         active_sprite_list.draw(screen)
         apple_list.draw(screen)
         draw_score(screen, 50, 30, score)
-
         clock.tick(60)
         pygame.display.flip()
 

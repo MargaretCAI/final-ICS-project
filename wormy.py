@@ -19,7 +19,7 @@ background = black
 head = 0
 clock = pygame.time.Clock()
 introduction = True
-
+count = 0
 
 def main():
     global displaysurface
@@ -30,7 +30,9 @@ def main():
     pygame.display.set_caption("wormy!")
     showStartScreen()
     while True:
-        runGame()
+        return runGame()
+    pygame.quit()
+
         # showGameOver()
 
 
@@ -39,6 +41,7 @@ def foodlocation():
 
 
 def runGame():
+    global count
     direction = "right"
 
     startx = random.randint(5, cellwidth - 6)
@@ -53,9 +56,11 @@ def runGame():
     food = foodlocation()
 
     while True:
+        if count > 6:
+            return 0
         for event in pygame.event.get():
             if event.type == QUIT:
-                terminate()
+                return 1
 
             elif event.type == KEYDOWN:
                 if event.key == K_LEFT:
@@ -82,7 +87,9 @@ def runGame():
         # check apple and collision
 
         if wormCoords[0]["x"] == food["x"] and wormCoords[0]["y"] == food["y"]:
+            count+=1
             food = foodlocation()
+
             length = len(wormCoords) - 1
             newtail = {"x": wormCoords[length]['x'], "y": wormCoords[length]["y"]}
             wormCoords.insert(length, newtail)
@@ -90,7 +97,8 @@ def runGame():
         # checkgameover
         for body in wormCoords[1:]:
             if body["x"] == wormCoords[0]["x"] and body["y"] == wormCoords[0]["y"]:
-                terminate()
+                return 1
+
 
         if direction == "up":
             newHead = {"x": wormCoords[0]['x'], "y": wormCoords[0]["y"] - 1}
@@ -112,9 +120,7 @@ def runGame():
         clock.tick(FPS)
 
 
-def terminate():
-    pygame.quit()
-    sys.exit()
+
 
 
 def drawfood(coord):
@@ -154,11 +160,15 @@ def showStartScreen():
         if checkForKeyPress():
             pygame.event.get()
             return
-
         pygame.display.update()
         clock.tick(FPS)
         degree1 += 3
 
-main()
+def quit():
+    pygame.quit()
+
+
+a = main()
+print(a)
 
 

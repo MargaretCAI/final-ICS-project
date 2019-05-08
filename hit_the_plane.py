@@ -7,15 +7,68 @@ pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
-win = True
+win = False
 pygame.init()
-# --- Classes
+WIDTH = 480
+HEIGHT = 600
+font_name = pygame.font.match_font('arial')
+
+
+def draw_text(surf, text, size, x, y):
+    ## selecting a cross platform font to display the score
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, WHITE)       ## True denotes the font to be anti-aliased
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+
+def main_menu():
+    text1 = "Press [ENTER] To Begin"
+    global screen
+    screen_width = 640
+    screen_height = 480
+    screen = pygame.display.set_mode([screen_width, screen_height])
+
+    title = pygame.image.load("ball.png")
+    screen.blit(title, (0,0))
+    pygame.display.update()
+
+    while True:
+        # screen.blit(title,(200,200))
+        draw_text(screen, "Press [ENTER] To Begin", 30, WIDTH / 2, HEIGHT / 2)
+        draw_text(screen, "or [Q] To Quit", 30, WIDTH / 2, (HEIGHT / 2) + 40)
+        ev = pygame.event.poll()
+        if ev.type == pygame.KEYDOWN:
+            if ev.key == pygame.K_RETURN:
+                break
+            elif ev.key == pygame.K_q:
+                pygame.quit()
+
+        elif ev.type == pygame.QUIT:
+                pygame.quit()
+        pygame.display.update()
+    main()
+
+
+
+
+
+
+class Enemy(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface([12, 12])
+        self.rect = self.image.get_rect()
+    def update(self):
+        self.rect.y += 1
+
 
 
 class Block(pygame.sprite.Sprite):
-    """ This class represents the block. """
 
-    def __init__(self, color):
+
+    def __init__(self):
         super().__init__()
         self.image = pygame.Surface([12, 12])
         self.image.fill(color)
@@ -28,24 +81,16 @@ class Block(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        """ Set up the player on creation. """
-        # Call the parent class (Sprite) constructor
 
-        self.image = pygame.Surface([20, 20])
-        self.image.fill(RED)
+        self.image = pygame.image.load("apple.png")
         self.rect = self.image.get_rect()
 
     def update(self):
-        """ Update the player's position. """
-        # Get the current mouse position. This returns the position
-        # as a list of two numbers.
-        # pos = pygame.mouse.get_pos()
+        pos = pygame.mouse.get_pos()
 
-        # Set the player x position to the mouse x position
-        # self.rect.x = pos[0]
-        # self.rect.y = pos[1]
-        self.rect.x = 100
-        self.rect.y = 100
+        self.rect.x = pos[0]
+        self.rect.y = HEIGHT
+
 
 
 
@@ -55,16 +100,14 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self):
         # Call the parent class (Sprite) constructor
         super().__init__()
-
-        self.image = pygame.Surface([4, 10])
-
+        self.image = pygame.image.load("apple.png")
         self.rect = self.image.get_rect()
-        color = random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)
-        self.image.fill(color)
+
 
     def update(self):
-
         self.rect.y -= 3
+        if self.rect.top > HEIGHT:
+            self.kill()
 
 
 def main():
@@ -100,7 +143,6 @@ def main():
 
 
     while not done:
-        # --- Event Processing
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 win = False
@@ -141,7 +183,7 @@ def main():
 
             # For each block hit, remove the bullet and add to the score
             for block in block_hit_list:
-                sound = pygame.mixer.Sound('beep.wav').play()
+                # sound = pygame.mixer.Sound('beep.wav').play()
                 bullet_list.remove(bullet)
 
                 score += 1
@@ -168,5 +210,5 @@ def main():
     pygame.quit()
 
 
-main()
+main_menu()
 

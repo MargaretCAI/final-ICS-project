@@ -103,10 +103,7 @@ def running():
         pygame.display.flip()
         clock.tick(FPS)
 
-
 main()
-
-
 
 
 
